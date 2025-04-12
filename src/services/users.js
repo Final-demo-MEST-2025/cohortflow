@@ -1,7 +1,13 @@
 import axios from 'axios';
 import { authService } from './auth';
 
-const client = axios.create({ baseURL: "/api/v1" });
+const isDev = import.meta.env.MODE === "development";
+const liveURL = import.meta.env.VITE_API_BASE_URL;
+
+const baseURL = isDev ? "/api/v1" : `${liveURL}/api/v1`;
+
+const client = axios.create({ baseURL });
+
 
 class UserService {
   getAuthContext(auth=false) {

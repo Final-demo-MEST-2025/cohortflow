@@ -1,5 +1,5 @@
 import { useActionState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { z } from "zod";
 import {
   UserCircleIcon,
@@ -16,6 +16,8 @@ import {
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Button } from "../../button";
+import { removeEmptyFields } from "../../../../utils/objectPrune";
+
 
 const ProfileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -29,31 +31,10 @@ const ProfileSchema = z.object({
 });
 
 export default function ProfileEditForm({ onUpdate }) {
+  const navigate = useNavigate();
   const data = useOutletContext();
   const user = { ...data.profile.data, ...data.user.data };
   
-  const removeEmptyFields = (obj) => {
-    return Object.entries(obj).reduce((acc, [key, value]) => {
-      if (
-        value === null ||
-        value === undefined ||
-        (typeof value === "string" && value.trim() === '')
-      ) {
-        return acc
-      }
-
-      if (typeof value === 'object' && !Array.isArray(value)) {
-        const cleaned = removeEmptyFields(value);
-        if (Object.keys(cleaned).length > 0) {
-          acc[key] = cleaned;
-        }
-        return acc;
-      }
-      acc[key] = value;
-      return acc;
-    }, {})
-  }
-
 
   const [state, formAction] = useActionState(
 
@@ -216,9 +197,7 @@ export default function ProfileEditForm({ onUpdate }) {
                   id="github"
                   type="text"
                   name="gitHub"
-                  defaultValue={
-                    user.links?.gitHub || ""
-                  }
+                  defaultValue={user.links?.gitHub || ""}
                   placeholder="username"
                   aria-describedby="github-error"
                 />
@@ -248,9 +227,7 @@ export default function ProfileEditForm({ onUpdate }) {
                   id="linkedin"
                   type="text"
                   name="linkedIn"
-                  defaultValue={
-                    user.links?.linkedIn || ""
-                  }
+                  defaultValue={user.links?.linkedIn || ""}
                   placeholder="username"
                   aria-describedby="linkedin-error"
                 />
@@ -302,14 +279,12 @@ export default function ProfileEditForm({ onUpdate }) {
         <div className="mt-6 flex justify-end gap-4">
           <button
             type="button"
-            // onClick={onCancel}
-            className="flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+            onClick={() => navigate(-1)}
+            className="flex items-center justify-center rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2"
           >
             Cancel
           </button>
-          <Button
-          
-          >
+          <Button>
             Save Changes
             <CheckIcon className="ml-2 h-4 w-4" />
           </Button>

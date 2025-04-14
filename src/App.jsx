@@ -12,6 +12,8 @@ import CreateUserPage from './pages/dashboard/users/create/page'
 import ProfileLayout from './pages/dashboard/profile/layout' 
 import ProfilePage from './pages/dashboard/profile/page'
 import ProfileEditPage  from './pages/dashboard/profile/edit/page'
+import ClassroomLayout from './pages/dashboard/classrooms/layout'
+import ClassroomHome from './pages/dashboard/classrooms/page'
 
 
 const App = () => {
@@ -36,6 +38,9 @@ const App = () => {
               <Route element={<ProtectedRoute roles={['admin']} /> }>
                 <Route path="/dashboard/users" element={<UsersPage />} />
                 <Route path='/dashboard/users/create' element={<CreateUserPage />} />
+              </Route>
+              <Route path='/dashboard/classrooms' element={<ClassroomLayout />}>
+                <Route index element={<ClassroomHome /> } />
               </Route>
             </Route>
           </Route>

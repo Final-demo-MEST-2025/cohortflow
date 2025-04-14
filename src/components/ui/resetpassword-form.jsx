@@ -1,19 +1,18 @@
 import {
-    AtSymbolIcon,
-    KeyIcon,
-    ExclamationCircleIcon,
-  } from "@heroicons/react/24/outline";
-  import { ArrowRightIcon, CodeBracketIcon } from "@heroicons/react/20/solid";
+  KeyIcon,
+  ExclamationCircleIcon,
+  CodeBracketIcon
+} from "@heroicons/react/24/outline";
+  import { ArrowRightIcon } from "@heroicons/react/20/solid";
   import { Button } from "./button";
   import { useActionState } from "react";
-  import { useNavigate, useLocation, Link } from "react-router-dom";
+  import { useNavigate } from "react-router-dom";
   import { resetpasswordFormSchema } from "../../validators/users";
   import { authService } from "../../services/auth";
   import { useNotification } from "@/hooks";
   
   export default function ResetPasswordForm() {
     const navigate  = useNavigate();
-    const location = useLocation();
     const iniatialState = { message: null, errors: {} };
     const notify = useNotification();
   
@@ -26,12 +25,12 @@ import {
               confirmNewPassword: formData.get("confirmNewPassword")
             });
             if (!success) {
-              console.log(error)
               return {
                 errors: error.flatten().fieldErrors,
                 message: "Missing fields. Failed to login",
               };
             }
+            console.log(data)
             const res = await authService.resetPassword(data);
             if (res) {
               navigate("/auth/login");
@@ -47,16 +46,14 @@ import {
     return (
       <form action={formAction} className="space-y-3">
         <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-          <h1 className="font-lusitana mb-3 text-2xl">
-            Reset Password.
-          </h1>
+          <h1 className="font-lusitana mb-3 text-2xl">Reset Password.</h1>
           <div className="w-full">
-          <div>
+            <div>
               <label
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="code"
               >
-               Reset Code
+                Reset Code
               </label>
               <div className="relative">
                 <input
@@ -83,7 +80,7 @@ import {
                 className="mb-3 mt-5 block text-xs font-medium text-gray-900"
                 htmlFor="newPassword"
               >
-               New Password
+                New Password
               </label>
               <div className="relative">
                 <input
@@ -104,6 +101,10 @@ import {
                     </p>
                   ))}
               </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Password must be at least 6 characters with 1 uppercase, 1
+                lowercase, 1 number, and 1 special character.
+              </p>
             </div>
             <div className="mt-4">
               <label
@@ -123,7 +124,11 @@ import {
                 />
                 <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
               </div>
-              <div id="confirmNewPassword-error" aria-live="polite" aria-atomic="true">
+              <div
+                id="confirmNewPassword-error"
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {state?.errors.confirmNewPassword &&
                   state.errors.confirmNewPassword.map((error) => (
                     <p className="mt-2 text-xs text-red-500" key={error}>
@@ -133,7 +138,7 @@ import {
               </div>
             </div>
           </div>
-         
+
           {/* <input type="hidden" name="redirectTo" value={callbackUrl} /> */}
           <Button className="mt-4 w-full" aria-disabled={isPending}>
             {isPending ? (

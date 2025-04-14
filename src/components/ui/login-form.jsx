@@ -9,13 +9,13 @@ import { useActionState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { loginFormSchema } from "../../validators/users";
 import { authService } from "../../services/auth";
-import { useNotification } from "../../hooks/notification";
+import { useNotification } from "@/hooks";
 
 export default function LoginForm() {
   const navigate  = useNavigate();
   const location = useLocation();
   const iniatialState = { message: null, errors: {} };
-  const setNotification = useNotification();
+  const notify = useNotification();
 
   const [state, formAction, isPending] = useActionState(
     async (prevState, formData) => {
@@ -35,10 +35,10 @@ export default function LoginForm() {
           if (res) {
             const from = location.state?.from.pathname || '/dashboard';
             navigate(from, { replace: true });
-            setNotification("Login successfully");
+            notify("Login successfully", "success");
           }
       } catch (error) {
-        console.log(error)
+        notify(error?.response.data.error, 'error');
       }
     },
     iniatialState

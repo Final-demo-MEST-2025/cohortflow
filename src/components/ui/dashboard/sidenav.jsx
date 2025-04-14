@@ -3,22 +3,22 @@ import { Link, useNavigate } from "react-router-dom";
 import NavLinks from "./nav-links";
 import CohortFlowLogo from "../cohortflow-logo";
 import { PowerIcon } from "@heroicons/react/24/outline";
-import { authService } from "../../../services/auth";
-import { useNotification } from "../../../hooks/notification";
+import { authService } from "@/services/auth";
+import { useNotification } from "@/hooks";
 
 
 export default function SideNav() {
   const navigate = useNavigate();
-  const setNotification = useNotification();
+  const notify = useNotification();
 
   const [_, formAction, isPending] = useActionState(
     async () => {
       try {
         await authService.logout();
         navigate("/");
-        setNotification("Logout successfully");
+        notify("Logout successfully", "success");
       } catch (error) {
-        console.log(error)
+        notify(error?.response.data.error, 'error')
       }
     }
   )

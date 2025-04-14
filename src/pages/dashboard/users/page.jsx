@@ -10,9 +10,14 @@ import { userService } from "@/services/users";
 
 export default function UsersPage() {
   const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [newRole, setNewRole] = useState(""); 
+  
+
   const authCtx = userService.getAuthContext();
   const isAdmin = authCtx?.user?.role === "admin";
 
+  
   const { data } = useQuery({
     queryKey:["userData"],
     queryFn: () => userService.fetchUserData(),
@@ -22,13 +27,24 @@ export default function UsersPage() {
     suspense: isAdmin
   });
 
+  const handleActions = (type) => {
+    console.log(type);
+    console.log(selectedUserIds);
+    console.log(newRole)
+  }
+
   if (!data) return null;
   return (
     <main className="p-4 md:p-6 space-y-6">
       <h1 className="font-lusitana mb-4 text-xl md:text-2xl md:mb-8">Users</h1>
       <div className="flex lg:flex-row lg:items-center lg:justify-between gap-4">
         <UserSearch placeholder="search by name...." />
-        <UserActions />
+        <UserActions
+          onClick={handleActions}
+          selectedUserIds={selectedUserIds}
+          newRole={newRole}
+          setNewRole={setNewRole}
+        />
       </div>
 
       <div className="mt-6 flow-root">
@@ -40,7 +56,12 @@ export default function UsersPage() {
               ))}
             </div>
 
-            <UserTable users={data?.users} setSelectedUser={setSelectedUser} />
+            <UserTable
+              users={data?.users}
+              setSelectedUser={setSelectedUser}
+              setSelectedUserIds={setSelectedUserIds}
+              selectedUserIds={selectedUserIds}
+            />
           </div>
         </div>
         {selectedUser && (

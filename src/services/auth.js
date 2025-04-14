@@ -5,8 +5,6 @@ const liveURL = import.meta.env.VITE_API_BASE_URL;
 
 const baseURL = isDev ? "/api/v1" : `${liveURL}/api/v1`;
 
-console.log("Base API URL:", baseURL);
-
 const client = axios.create({ baseURL });
 
 class AuthError extends Error {
@@ -18,10 +16,12 @@ class AuthError extends Error {
 
 class AuthService {
   static REFRESH_TOKEN_EXPIRY_DAYS = 7;
+  isRefreshing = false;
   token;
   refreshToken;
   user;
   tokenExpiry;
+  refreshExpiry
   deviceId;
 
   constructor() {
@@ -45,6 +45,10 @@ class AuthService {
     this.refreshToken = localStorage.getItem("refreshToken");
     const expiry = localStorage.getItem("tokenExpiry");
     this.tokenExpiry = expiry ? parseInt(expiry) : null;
+    this.refreshExpiry = parseInt(
+      localStorage.getItem('refreshTokenExpiry')
+    ) || null;
+    this.user = JSON.parse(localStorage.getItem('user'));
   }
   
 
@@ -55,8 +59,9 @@ class AuthService {
     this.user = JSON.stringify(response.user);
     // Calculate expiration (7 days from initial login)
     const refreshTokenExpiry = Date.now() + AuthService.REFRESH_TOKEN_EXPIRY_DAYS * 86400000;
+    this.refreshExpiry = refreshTokenExpiry;
 
-    localStorage.setItem("refreshTokenExpiry", refreshTokenExpiry);
+    localStorage.setItem("refreshTokenExpiry", refreshTokenExpiry.toString());
     localStorage.setItem("accessToken", response.accessToken);
     localStorage.setItem("refreshToken", response.refreshToken);
     localStorage.setItem("tokenExpiry", this.tokenExpiry.toString());
@@ -78,26 +83,41 @@ class AuthService {
   }
 
   async checkTokenExpiry() {
-    // If no tokens exist, do nothing
-    if (!this.token || !this.refreshToken || !this.tokenExpiry) return;
+    console.log('is refreshing...', this.isRefreshing || !this.token ? "false" : "true");
+    if (
+      this.isRefreshing ||
+      !this.token ||
+      !this.refreshToken ||
+      !this.tokenExpiry
+    ) return;
+
     // If token is still valid (with 1 minute buffer), do nothing
     if (Date.now() < this.tokenExpiry - 60000) return;
+
+
     // if refresh token has expired, force logout UI update
-    const expiry = localStorage.getItem("refreshTokenExpiry");
-    if (expiry && Date.now() > parseInt(expiry) - 60000) {
-      await this.logout();
-    } 
+    const refreshExpiry = localStorage.getItem("refreshTokenExpiry");
+    if (refreshExpiry && Date.now() > parseInt(refreshExpiry) - 60000) {
+      console.log('refresh token expired');
+      await this.logout(true);
+      return;
+    }
+
+    console.log('About to refresh...')
     
-    // If token is expired or about to expire, attempt refresh
+    this.isRefreshing = true;
+
     try {
-      const success = await this.refreshAuthToken();
-      if (!success) {
-        this.clearTokens();
+      const refreshed = await this.refreshAuthToken();
+      console.log(refreshed)
+      if (!refreshed) {
         throw new AuthError("SessionExpired");
       }
     } catch (error) {
-      this.clearTokens();
-      throw error;
+      console.log('Auto-refresh failed', error);
+      await this.logout(true);
+    } finally {
+      this.isRefreshing = false;
     }
   }
 
@@ -110,20 +130,22 @@ class AuthService {
   }
 
   async refreshAuthToken() {
-    if (!this.refreshToken) return false;
-
     const storedExpiry = localStorage.getItem("refreshTokenExpiry");
     const expiryDate = storedExpiry ? parseInt(storedExpiry) : null
 
+    if (!this.refreshToken || !expiryDate) return false;
+
     // Automatic logout if expired
-    if (expiryDate && Date.now() > expiryDate) {
-      this.clearTokens();
+    if (Date.now() > expiryDate) {
+      console.log('refreshToken expired')
+
+      await this.logout(true);
       return false;
     }
 
-    console.log("refresh attempt...")
-
     try {
+      console.log('Refreshing access token...');
+
       const response = await client("/users/refresh-token", {
         method: "POST",
         headers: this.getJsonHeaders(true),
@@ -135,32 +157,27 @@ class AuthService {
 
       if (response.status === 200) {
         this.saveTokens(response.data);
+        console.log('Token refreshed successfully');
         return true;
       }
     } catch (error) {
       console.error("Error refreshing auth token:", error);
     }
 
-    this.clearTokens();
+    await this.logout(true);
     return false;
   }
 
   setupTokenRefresh() {
-    // Check and attempt refresh every 30 seconds
     setInterval(() => {
-      this.checkTokenExpiry().catch((error) => {
-        console.log("Auto-refresh failed", error);
-        this.clearTokens();
-      });
-    },30000);
+      this.checkTokenExpiry();
+    }, 30000);
   }
 
   async login(credentials) {
     const response = await client("/users/login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: this.getJsonHeaders(),
       data: {
         ...credentials,
         deviceInfo: {
@@ -169,11 +186,11 @@ class AuthService {
         },
       },
     });
-    if (response.status !== 200) {
-      console.log(error);
-      const error = response.data;
-      throw new AuthError(error.message || "LoginFailed");
-    }
+    // if (response.status !== 200) {
+    //   console.log(error);
+    //   const error = response.data;
+    //   throw new AuthError(error.message || "LoginFailed");
+    // }
     this.saveTokens(response.data);
     return true;
   }

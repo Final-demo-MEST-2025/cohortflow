@@ -3,21 +3,23 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { userService } from "@/services/users";
 import Breadcrumbs from "@/components/ui/breadcrumbs";
 import { RegisterForm } from "@/components/ui/dashboard/users/create-form";
-import { useNotification } from "@/hooks/notification";
+import { useNotification } from "@/hooks";
 
 export default function Page() {
   const navigate = useNavigate();
-  const setNotification = useNotification();
+  const notify = useNotification();
   const queryClient = useQueryClient();
 
   const registerMutation = useMutation({
     mutationFn: (credentials) => userService.registerUser(credentials),
     onSuccess: (user) => {
-      const users = queryClient.getQueryData(['userData'])
-      queryClient.setQueryData(['userData'], users.concat(user))
+      console.log(user)
+      queryClient.getQueryData(['userData'])
+      // queryClient.setQueryData(['userData'], users.concat(user))
     },
-    onError: () => setNotification(
-      'Something went wrong. User registration unsuccessful.'
+    onError: () => notify(
+      'Something went wrong. User registration unsuccessful.',
+      'error'
     )
   })
 
@@ -25,7 +27,7 @@ export default function Page() {
     registerMutation.mutate(credentials, {
       onSuccess: () => {
         navigate(-1);
-        setNotification(message);
+        notify(message, 'success');
       },
     });
   }

@@ -8,7 +8,10 @@ import ProtectedRoute from './components/ui/protected-route'
 import LoginPage from './pages/login/page'
 import Notification from './components/ui/notification'
 import UsersPage from './pages/dashboard/users/page'
-import CreateUserPage from './pages/dashboard/users/create/page' 
+import CreateUserPage from './pages/dashboard/users/create/page'
+import ProfileLayout from './pages/dashboard/profile/layout' 
+import ProfilePage from './pages/dashboard/profile/page'
+import ProfileEditPage  from './pages/dashboard/profile/edit/page'
 
 
 const App = () => {
@@ -26,6 +29,10 @@ const App = () => {
           >
             <Route path="dashboard" element={<Layout />}>
               <Route index element={<DashboardHome />} />
+              <Route path="/dashboard/users/me" element={<ProfileLayout />} >
+                <Route index element={<ProfilePage />} />
+                <Route path="/dashboard/users/me/edit" element={<ProfileEditPage />}/>
+              </Route>
               <Route element={<ProtectedRoute roles={['admin']} /> }>
                 <Route path="/dashboard/users" element={<UsersPage />} />
                 <Route path='/dashboard/users/create' element={<CreateUserPage />} />

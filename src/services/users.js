@@ -10,7 +10,7 @@ const client = axios.create({ baseURL });
 
 
 class UserService {
-  getAuthContext(auth=false) {
+  getAuthContext(auth = false) {
     return {
       user: authService.getAuthenticatedUser(),
       headers: authService.getJsonHeaders(auth),
@@ -49,28 +49,45 @@ class UserService {
     if (!isAuthenticated && user?.role !== "admin") {
       console.warn("Not authorized to fetch user count.");
       return null;
-    };
+    }
 
     try {
       const response = await client("/users/count", {
         method: "GET",
         headers,
       });
-  
+
       if (response.status !== 200) {
         console.error("Failed to fetch user count.");
         return null;
       }
-  
-      return response.data;
 
+      return response.data;
     } catch (error) {
-      console.log(error)
-    };
+      console.log(error);
+    }
+  }
+
+  async fetchUser() {
+    const userRoles = ["admin", "instructor", "learner"];
+    const { user, headers, isAuthenticated } = this.getAuthContext(true);
+    if (!isAuthenticated && !userRoles.includes(user.role)) {
+      console.warn("Not authorized to fetch profile.");
+      return null;
+    }
+
+    try {
+      const response = await client("/users/me", {
+        headers: headers,
+      });
+      return response.data;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   async registerUser(credentials) {
-    console.log(credentials)
+    console.log(credentials);
     const { user, headers, isAuthenticated } = this.getAuthContext(true);
 
     if (!isAuthenticated && user?.role !== "admin") {
@@ -81,16 +98,15 @@ class UserService {
       const response = await client("/users/register", {
         method: "POST",
         headers,
-        data: credentials
+        data: credentials,
       });
-  
+
       if (response.status !== 201) {
         console.error("Failed to fetch user count.");
         return null;
       }
 
       return response.data;
-
     } catch (error) {
       console.log(error);
     }

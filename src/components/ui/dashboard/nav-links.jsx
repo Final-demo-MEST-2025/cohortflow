@@ -39,7 +39,7 @@ export default function NavLinks() {
     isAdmin && { name: "Resources", to: "/dashboard/resources", icon: InboxStackIcon },
     isAdmin && { name: "Users", to: "/dashboard/users", icon: UsersIcon },
     { name: "Courses", to: "/dashboard/courses", icon: BookOpenIcon },
-    { name: "Profile", to: "/dashboard/profile", icon: UserCircleIcon },
+    { name: "Profile", to: "/dashboard/users/me", icon: UserCircleIcon },
     { name: "Settings", to: "/dashboard/settings", icon: CogIcon },
   ].filter(Boolean);
 

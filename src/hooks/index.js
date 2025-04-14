@@ -5,8 +5,8 @@ import NotificationContext from "../contexts/notification";
 export const useNotification = () => {
   const { dispatch } = useContext(NotificationContext);
 
-  return (message, timeout = 5000) => {
-    dispatch({ type: "SET", payload: message });
+  return (message, type, timeout = 8000) => {
+    dispatch({ type: "SET", payload: { message, type } });
 
     const t = setTimeout(() => {
       dispatch({ type: "REMOVE" });

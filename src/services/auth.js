@@ -223,12 +223,13 @@ class AuthService {
   }
 
   async forgotPassword(email) {
+    console.log(email)
     const response = await client("/users/forgot-password", {
       method: "PATCH",
       headers: {
         "Content-Type": this.getJsonHeaders(),
       },
-      data: { email },
+      data: email,
     });
 
     if (response.status !== 200) {

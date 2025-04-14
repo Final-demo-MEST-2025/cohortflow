@@ -6,7 +6,7 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useActionState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { loginFormSchema } from "../../validators/users";
 import { authService } from "../../services/auth";
 import { useNotification } from "@/hooks";
@@ -105,6 +105,13 @@ export default function LoginForm() {
                 ))}
             </div>
           </div>
+        </div>
+        <div className="mt-2 md:mt-4 text-brand-600 text-sm">
+          <Link
+            to='/auth/forgot-password'
+          >
+          forgot password?
+          </Link>
         </div>
         {/* <input type="hidden" name="redirectTo" value={callbackUrl} /> */}
         <Button className="mt-4 w-full" aria-disabled={isPending}>

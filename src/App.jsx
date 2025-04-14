@@ -14,6 +14,8 @@ import ProfilePage from './pages/dashboard/profile/page'
 import ProfileEditPage  from './pages/dashboard/profile/edit/page'
 import ClassroomLayout from './pages/dashboard/classrooms/layout'
 import ClassroomHome from './pages/dashboard/classrooms/page'
+import ForgotPassword from './pages/auth/forgot-password'
+import ResetPassword from './pages/auth/reset-password'
 
 
 const App = () => {
@@ -24,6 +26,8 @@ const App = () => {
         <Route element={<RootLayout />}>
           <Route index element={<Page />} />
           <Route path="auth/login" element={<LoginPage />} />
+          <Route path= "auth/forgot-password" element= {<ForgotPassword/>} />
+          <Route path= "auth/reset-password" element= {<ResetPassword/>}/>
           <Route
             element={
               <ProtectedRoute roles={["admin", "instructor", "learner"]} />

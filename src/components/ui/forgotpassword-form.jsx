@@ -5,14 +5,13 @@ import {
   import { ArrowRightIcon } from "@heroicons/react/20/solid";
   import { Button } from "./button";
   import { useActionState } from "react";
-  import { useNavigate, useLocation } from "react-router-dom";
+  import { useNavigate } from "react-router-dom";
   import { forgotpasswordSchema } from "../../validators/users";
   import { authService } from "../../services/auth";
   import { useNotification } from "@/hooks";
   
   export default function ForgotPasswordForm() {
     const navigate  = useNavigate();
-    const location = useLocation();
     const iniatialState = { message: null, errors: {} };
     const notify = useNotification();
   
@@ -29,12 +28,11 @@ import {
                 message: "Missing fields. Failed to login",
               };
             }
-            const { email } = data;
-            const res = await authService.forgotPassword(email);
+            const res = await authService.forgotPassword(data);
             if (res) {
-            
-              navigate("auth/reset-password");
-              notify("if your email is in our system you'll receive reset code", "success");
+              console.log(res)
+              navigate("/auth/reset-password");
+              notify("if your email is in our system you will receive reset code", "success");
             }
         } catch (error) {
           console.log(error)

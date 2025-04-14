@@ -106,7 +106,7 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <div className="mt-2 md:mt-4 text-brand-600 text-sm">
+        <div className="mt-2 md:mt-4 text-brand-400 text-sm">
           <Link
             to='/auth/forgot-password'
           >

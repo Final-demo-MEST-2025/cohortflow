@@ -56,7 +56,7 @@ export const resetpasswordFormSchema = z
       ),
     confirmNewPassword: z.string(),
   })
-  .refine((data) => data.newPasswordpassword === data.confirmNewPassword, {
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
     message: "Passwords don't match",
     path: ["confirmNewPassword"],
   });

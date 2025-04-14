@@ -223,12 +223,9 @@ class AuthService {
   }
 
   async forgotPassword(email) {
-    console.log(email)
     const response = await client("/users/forgot-password", {
       method: "PATCH",
-      headers: {
-        "Content-Type": this.getJsonHeaders(),
-      },
+      headers: this.getJsonHeaders(),
       data: email,
     });
 
@@ -242,9 +239,7 @@ class AuthService {
   async resetPassword(credentials) {
     const response = await client("/users/reset-password", {
       method: "PATCH",
-      headers: {
-        "Content-Type": this.getJsonHeaders(),
-      },
+      headers: this.getJsonHeaders(),
       data: credentials,
     });
 

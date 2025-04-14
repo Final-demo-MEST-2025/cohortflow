@@ -15,7 +15,7 @@ export default function ProtectedRoute({ roles }) {
       if (!authService.isAuthenticated()) {
         const refreshed = await  authService.refreshAuthToken();
         if (!refreshed) {
-          navigate("/login", { 
+          navigate("auth/login", { 
             replace: true,
             state: { from: location }
           });

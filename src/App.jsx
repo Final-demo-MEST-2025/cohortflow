@@ -5,7 +5,7 @@ import Page from './pages/page'
 import Layout from './pages/dashboard/layout'
 import DashboardHome from './pages/dashboard/page'
 import ProtectedRoute from './components/ui/protected-route'
-import LoginPage from './pages/login/page'
+import LoginPage from './pages/auth/login-page'
 import Notification from './components/ui/notification'
 import UsersPage from './pages/dashboard/users/page'
 import CreateUserPage from './pages/dashboard/users/create/page'
@@ -23,7 +23,7 @@ const App = () => {
       <Routes>
         <Route element={<RootLayout />}>
           <Route index element={<Page />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="auth/login" element={<LoginPage />} />
           <Route
             element={
               <ProtectedRoute roles={["admin", "instructor", "learner"]} />

@@ -14,28 +14,21 @@ import {
 import { Link } from "react-router-dom";
 import { useLocation } from "react-router-dom"; 
 import clsx from "clsx";
-import { authService } from "../../../../services/auth";
-
-
-// Map of links to display in the side navigation.
-// Depending on the size of the application, this would be stored in a database.
+// import { authService } from "../../../../services/auth";
 
 
 export default function NavLinks() {
-  const { role } = authService.getAuthenticatedUser();
-  const isAdmin = role === "admin";
+  // const { role } = authService.getAuthenticatedUser();
+  // const isAdmin = role === "admin";
   // const isInstructor = role === "instructor";
   
   const links = [
     { name: "Home", to: "/dashboard/classrooms", icon: HomeIcon },
-    isAdmin && { name: "Programs", to: "/dashboard/programs", icon: Squares2X2Icon },
-    isAdmin && { name: "Cohorts", to: "/dashboard/cohorts", icon: UserGroupIcon },
-    isAdmin && { name: "Attendance", to: "/dashboard/attendance", icon: CheckCircleIcon },
-    isAdmin && { name: "Resources", to: "/dashboard/resources", icon: InboxStackIcon },
-    isAdmin && { name: "Users", to: "/dashboard/users", icon: UsersIcon },
+    { name: "Announcements", to: "/dashboard/classrooms/a", icon: Squares2X2Icon },
+    { name: "Assignments", to: "/dashboard/cohorts", icon: UserGroupIcon },
+    { name: "Quizzes", to: "/dashboard/attendance", icon: CheckCircleIcon },
+    { name: "Projects", to: "/dashboard/resources", icon: InboxStackIcon },
     { name: "Courses", to: "/dashboard/courses", icon: BookOpenIcon },
-    { name: "Profile", to: "/dashboard/users/me", icon: UserCircleIcon },
-    { name: "Settings", to: "/dashboard/settings", icon: CogIcon },
   ].filter(Boolean);
 
 

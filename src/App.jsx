@@ -16,6 +16,7 @@ import ClassroomLayout from './pages/dashboard/classrooms/layout'
 import ClassroomHome from './pages/dashboard/classrooms/page'
 import ForgotPassword from './pages/auth/forgot-password'
 import ResetPassword from './pages/auth/reset-password'
+import ProgramCohortPage from './pages/dashboard/programs/page'
 
 
 const App = () => {
@@ -46,6 +47,7 @@ const App = () => {
               <Route path='/dashboard/classrooms' element={<ClassroomLayout />}>
                 <Route index element={<ClassroomHome /> } />
               </Route>
+              <Route path='/dashboard/programs' element={<ProgramCohortPage/> } />
             </Route>
           </Route>
         </Route>

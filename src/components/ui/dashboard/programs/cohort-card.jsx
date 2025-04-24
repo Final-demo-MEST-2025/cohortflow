@@ -17,9 +17,11 @@ import {
   ComboboxOption,
   Transition
 } from "@headlessui/react";
+import useDeleteConfirm from "@/feature/delete/use-delete-confirm";
 
 
 export default function CohortCard({
+  id,
   name,
   programId,
   description,
@@ -27,9 +29,12 @@ export default function CohortCard({
   instructors,
   startDate,
   endDate,
+  onCohortEdit
 }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [query, setQuery] = useState("");
+
+  const confirm = useDeleteConfirm();
 
   const users = [...learners, ...instructors];
   const filteredUsers =
@@ -59,13 +64,13 @@ export default function CohortCard({
             <div className="flex items-center">
               <UserGroupIcon className="h-5 w-5 text-gray-500" />
               <span className="ml-2 text-sm text-gray-700">
-                {learners.lenght + 1} Learners
+                {learners.length} Learners
               </span>
             </div>
             <div className="flex items-center">
               <UserIcon className="h-5 w-5 text-gray-500" />
               <span className="ml-2 text-sm text-gray-700">
-                {instructors.lenght + 1} Instructors
+                {instructors.length} Instructors
               </span>
             </div>
           </div>
@@ -83,10 +88,9 @@ export default function CohortCard({
         <div className="relative w-48">
           <Combobox value={selectedUser} onChange={setSelectedUser}>
             <ComboboxInput
-              className="w-full rounded-md border border-gray-300 focus:outline-none focus:ring2 focus:ring-brand-400 py-1 pl-2 pr-10 text-sm shadow-sm"
               displayValue={(user) => user?.name}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="View users..."
+              placeholder={`${filteredUsers.length} Users`}
             />
             <ComboboxButton className="absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronDownIcon className="h-4 w-4 text-gray-400" />
@@ -117,14 +121,27 @@ export default function CohortCard({
           </Combobox>
         </div>
 
-        <div className="mt-4 md:mt-6 flex justify-between">
-          <button className="flex items-center text-sm text-blue-600 hover:text-blue-800">
+        <div className="mt-4 md:mt-6 flex justify-center gap-15 ">
+          <button
+            className="flex items-center text-sm text-blue-600 hover:text-blue-800"
+            onClick={() => onCohortEdit(id)}
+
+          >
             <PencilIcon className="h-4 w-4" />
-            <span className="ml-1">Edit</span>
+            <span className="hidden ml-1">Edit</span>
           </button>
-          <button className="flex items-center text-sm text-red-600 hover:text-red-800">
+          <button
+            className="flex items-center text-sm text-red-600 hover:text-red-800"
+            onClick={() =>
+              confirm({
+                title: "Delete cohort?",
+                message: "This action cannot be undone",
+                onConfirm: () => console.log("Delete"),
+              })
+            }
+          >
             <TrashIcon className="h-4 w-4" />
-            <span className="ml-1">Delete</span>
+            <span className="hidden ml-1">Delete</span>
           </button>
         </div>
       </div>

@@ -20,9 +20,9 @@ class ProgramService {
   async fetchPrograms() {
     const userRoles = ["admin", "instructor", "learner"];
     const { user, headers, isAuthenticated } = this.getAuthContext(true);
-    if (!isAuthenticated && !userRoles.includes(user.role)) {
+    if (!isAuthenticated || !userRoles.includes(user.role)) {
       console.warn("Not authorized to fetch programs.");
-      return null;
+      return [];
     }
 
     try {
@@ -35,16 +35,21 @@ class ProgramService {
     }
   }
 
-  async fetchCohorts() {
+  async fetchCohorts(id) {
     const userRoles = ["admin", "instructor", "learner"];
     const { user, headers, isAuthenticated } = this.getAuthContext(true);
-    if (!isAuthenticated && !userRoles.includes(user.role)) {
+    if (!isAuthenticated || !userRoles.includes(user.role)) {
       console.warn("Not authorized to fetch cohorts.");
-      return null;
+      return [];
     }
 
     try {
-      const response = await client("/cohorts", {
+      let url = "/cohorts"
+      if (id) {
+        url = `/cohorts?programId=${id}`;
+      }
+      
+      const response = await client(url, {
         headers: headers,
       });
       return response.data;
@@ -53,61 +58,87 @@ class ProgramService {
     }
   }
 
-  async createProgram(data) {
-    const userRoles = ["admin"];
-    const { user, headers, isAuthenticated } = this.getAuthContext(true);
-    if (!isAuthenticated && !userRoles.includes(user.role)) {
-      console.warn("Not authorized to fetch cohorts.");
-      return null;
-    }
-
-    try {
-      const response = await client("/programs", {
-        headers: headers,
-        data: data,
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  async createCohort(data) {
-    const userRoles = ["admin"];
-    const { user, headers, isAuthenticated } = this.getAuthContext(true);
-    if (!isAuthenticated && !userRoles.includes(user.role)) {
-      console.warn("Not authorized to fetch cohorts.");
-      return null;
-    }
-
-    try {
-      const response = await client("/cohorts", {
-        headers: headers,
-        data: data,
-      });
-      return response.data;
-    } catch (error) {
-      throw new Error(error);
-    }
-  }
-
-  async updatePrograms(credentials) {
+  async fetchCohortInstructors(cohortId) {
     const userRoles = ["admin", "instructor", "learner"];
     const { user, headers, isAuthenticated } = this.getAuthContext(true);
-    if (!isAuthenticated && !userRoles.includes(user.role)) {
-      console.warn("Not authorized to fetch profile.");
-      return null;
+    if (!isAuthenticated || !userRoles.includes(user.role)) {
+      console.warn("Not authorized to fetch cohorts.");
+      return [];
+    }
+
+    const response = await client(`/cohorts/${cohortId}/instructors`, {
+      headers: headers,
+    });
+    return response.data;
+  }
+
+
+  async fetchCohortLearners(cohortId) {
+    const userRoles = ["admin", "instructor", "learner"];
+    const { user, headers, isAuthenticated } = this.getAuthContext(true);
+    if (!isAuthenticated || !userRoles.includes(user.role)) {
+      console.warn("Not authorized to fetch cohorts.");
+      return [];
+    }
+
+    const response = await client(`/cohorts/${cohortId}/learners`, {
+      headers: headers,
+    });
+    return response.data;
+  }
+
+
+  async mutateProgram(formData) {
+    const userRoles = ["admin"];
+    const { user, headers, isAuthenticated } = this.getAuthContext(true);
+    if (!isAuthenticated || !userRoles.includes(user.role)) {
+      console.warn("Not authorized to perform operation.");
+      return {};
     }
 
     try {
-      const response = await client("/programs", {
-        method: "patch",
+      const { id, ...rest } = formData;
+      let url = "/programs";
+      let method = "POST";
+      if (id) {
+        url = `${url}/${id}`;
+        method = "PATCH";
+      }
+      console.log(url);
+      const response = await client(url, {
+        method: method,
         headers: headers,
-        data: credentials,
+        data: rest,
       });
       return response.data;
     } catch (error) {
-      console.log(error);
+      throw new Error(error);
+    }
+  }
+
+  async mutateCohort(formData) {
+    const userRoles = ["admin"];
+    const { user, headers, isAuthenticated } = this.getAuthContext(true);
+    if (!isAuthenticated || !userRoles.includes(user.role)) {
+      console.warn("Not authorized to perform operation.");
+      return {};
+    }
+
+    try {
+      const { id, ...rest } = formData;
+      let url = "/cohorts";
+      let method = "POST";
+      if (id) {
+        url = `${url}/${id}`;
+        method = "PATCH";
+      }
+      const response = await client(url, {
+        method: method,
+        headers: headers,
+        data: rest,
+      });
+      return response.data;
+    } catch (error) {
       throw new Error(error);
     }
   }

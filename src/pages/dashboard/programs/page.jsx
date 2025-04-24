@@ -6,6 +6,7 @@ import CohortCard from "../../../components/ui/dashboard/programs/cohort-card";
 import ProgramModal from "../../../components/ui/dashboard/programs/program-form";
 import CohortModal from "../../../components/ui/dashboard/programs/cohort-form";
 import { programService } from "../../../services/programs";
+import { userService } from "../../../services/users";
 import { useNotification } from "@/hooks";
 
 export default function ProgramCohortPage() {
@@ -19,7 +20,13 @@ export default function ProgramCohortPage() {
   const authCtx = programService.getAuthContext();
   const isAdmin = authCtx?.user?.role === "admin";
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
+
+  const users = useQuery({
+    queryKey: ['userData'],
+    queryFn: () => userService.fetchUserData()
+  });
+
 
 
   const programs = useQuery({
@@ -41,22 +48,29 @@ export default function ProgramCohortPage() {
   });
 
   const programMutation = useMutation({
-    mutationFn: (data) => programService.createProgram(data),
-    onSuccess: (program) => {
-      const programs = queryClient.getQueryData(['programs'])
-      queryClient.setQueryData(['programs'], programs.concat(program))
+    mutationFn: (formData) => programService.mutateProgram(formData),
+    onSuccess: (program, formData) => {
+      const programs = queryClient.getQueryData(['programs']) || [];
+      if (formData.id) {
+        const updatedProgram = programs.map((p) =>
+          p.id === program.id ? program : p
+        );
+        queryClient.setQueryData(['programs'], updatedProgram);
+      } else {
+        queryClient.setQueryData(['programs'], programs.concat(program));
+      }
     },
     onError: () => notify(
-      'Something went wrong. User registration unsuccessful.',
+      'Something went wrong. operation unsuccessful.',
       'error'
     )
   });
 
   const cohortMutation = useMutation({
-    mutationFn: (data) => programService.createProgram(data),
+    mutationFn: (data) => programService.mutateCohort(data),
     onSuccess: (cohort) => {
-      const cohorts = queryClient.getQueryData(["cohorts"]);
-      queryClient.setQueryData(['cohorts'], cohorts.concat(cohort))
+      // const cohorts = queryClient.getQueryData(["cohorts"]);
+      queryClient.setQueryData(['cohorts'], cohort);
     },
     onError: () =>
       notify(
@@ -67,26 +81,49 @@ export default function ProgramCohortPage() {
 
 
 
-  const handleProgramSubmit = (data) => {
+  const handleProgramSubmit = (formData) => {
     setIsLoading(true);
-    programMutation.data(data, {
+    programMutation.mutate(formData, {
       onSuccess: () => {
-        notify("New program added successfully");
-      }
-    })
-  };
-
-  const handleCohortSubmit = (data) => {
-    setIsLoading(true);
-    cohortMutation.mutate(data, {
-      onSuccess: () => {
+        if (formData.id) {
+          notify("Program updated successfully", "success");
+        } else {
+          notify("New program added successfully", "success");
+        }
+        setShowProgramModal(false);
         setIsLoading(false);
       }
-    })
+    });
   };
 
-  const users = queryClient.getQueryData(['userData']);
-  console.log(users)
+  const handleCohortSubmit = (formData) => {
+    setIsLoading(true);
+    cohortMutation.mutate(formData, {
+      onSuccess: () => {
+        if (formData.id) {
+          notify("Cohort updated successfully", "success");
+        } else {
+          notify("New cohort added successfully", "success");
+        }
+        setShowCohortModal(false);
+        setIsLoading(false);
+      }
+    });
+  };
+
+  const handleEditProgram = (programId) => {
+    const programs = queryClient.getQueryData(['programs']);
+    const programToEdit = programs.find(p => p.id === programId);
+    setSelectedProgram(programToEdit);
+    setShowProgramModal(true);
+  }
+
+  const handleEditCohort = (cohortId) => {
+    const cohorts = queryClient.getQueryData(['cohorts']);
+    const cohortToEdit = cohorts.find((c) => c.id === cohortId);
+    setSelectedCohort(cohortToEdit);
+    setShowCohortModal(true);
+  }
 
   return (
     <div className="min-h-screen bg-white p-4 md:p-8">
@@ -107,15 +144,19 @@ export default function ProgramCohortPage() {
                   setShowProgramModal(true);
                 }}
               >
-                <PlusIcon className="mr-1 h-4 w-4" />
-                New Program
+                <span className="hidden md:block">New Program</span>
+                <PlusIcon className="ml-1 h-4 w-4" />
               </button>
             </div>
 
             <div className="space-y-4">
               {programs.data.length > 0 ? (
                 programs.data.map((program) => (
-                  <ProgramCard key={program.id} {...program} />
+                  <ProgramCard
+                    key={program.id}
+                    onProgramEdit={handleEditProgram}
+                    {...program}
+                  />
                 ))
               ) : (
                 <div className="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
@@ -136,15 +177,19 @@ export default function ProgramCohortPage() {
                   setShowCohortModal(true);
                 }}
               >
-                <PlusIcon className="mr-1 h-4 w-4" />
                 New Cohort
+                <PlusIcon className="ml-1 h-4 w-4" />
               </button>
             </div>
 
             <div className="space-y-4">
               {cohorts.data.length > 0 ? (
                 cohorts.data.map((cohort) => (
-                  <CohortCard key={cohort.id} {...cohort} />
+                  <CohortCard
+                    key={cohort.id}
+                    {...cohort}
+                    onCohortEdit={handleEditCohort}
+                  />
                 ))
               ) : (
                 <div className="rounded-lg border-2 border-dashed border-gray-300 p-8 text-center">
@@ -160,6 +205,7 @@ export default function ProgramCohortPage() {
             onClose={() => {
               setShowProgramModal(false);
               setSelectedProgram(null);
+              setIsLoading(false);
             }}
             onSubmit={handleProgramSubmit}
             isLoading={isLoading}
@@ -172,10 +218,11 @@ export default function ProgramCohortPage() {
             onClose={() => {
               setShowCohortModal(false);
               setSelectedCohort(null);
+              setIsLoading(false);
             }}
             onSubmit={handleCohortSubmit}
             programs={programs.data}
-            users={[]}
+            users={users.data.users}
             isLoading={isLoading}
           />
         )}

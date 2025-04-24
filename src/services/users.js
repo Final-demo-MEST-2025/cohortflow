@@ -87,29 +87,18 @@ class UserService {
   }
 
   async registerUser(credentials) {
-    console.log(credentials);
     const { user, headers, isAuthenticated } = this.getAuthContext(true);
 
     if (!isAuthenticated && user?.role !== "admin") {
       console.warn("Not authorized to fetch user count.");
       return;
     }
-    try {
-      const response = await client("/users/register", {
-        method: "POST",
-        headers,
-        data: credentials,
-      });
-
-      if (response.status !== 201) {
-        console.error("Failed to fetch user count.");
-        return null;
-      }
-
-      return response.data;
-    } catch (error) {
-      console.log(error);
-    }
+    const response = await client("/users/register", {
+      method: "POST",
+      headers,
+      data: credentials,
+    });
+    return response.data;
   }
 }
 

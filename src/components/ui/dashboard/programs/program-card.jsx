@@ -6,8 +6,12 @@ import {
   TrashIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
+import useDeleteConfirm from "@/feature/delete/use-delete-confirm";
+
 
 export default function ProgramCard({
+  onProgramEdit,
+  id,
   name,
   description,
   location,
@@ -15,6 +19,7 @@ export default function ProgramCard({
   endDate,
   createdBy,
 }) {
+  const confirm = useDeleteConfirm();
   return (
     <div className="font-lusitana w-full h-70 rounded-xl bg-gray-50 p-4 shadow-sm">
       <div className="mb-4 flex items-center">
@@ -45,15 +50,29 @@ export default function ProgramCard({
         </div>
       </div>
 
-      <div className="mt-6 flex justify-between">
-        <button className="flex items-center text-sm text-red-600 hover:text-red-800">
-          <TrashIcon className="h-4 w-4" />
-          <span className="ml-1">Delete</span>
+      <div className="flex-1"></div>
+
+      <div className="mt-6 flex justify-center gap-15">
+        <button
+          className="flex items-center text-sm text-blue-600 hover:text-blue-800"
+          onClick={() => onProgramEdit(id)}
+        >
+          <PencilIcon className="h-4 w-4" />
+          <span className="hidden ml-1">Edit</span>
         </button>
 
-        <button className="flex items-center text-sm text-blue-600 hover:text-blue-800">
-          <PencilIcon className="h-4 w-4" />
-          <span className="ml-1">Edit</span>
+        <button
+          className="flex items-center text-sm text-red-600 hover:text-red-800"
+          onClick={() =>
+            confirm({
+              title: "Delete program?",
+              message: "This action cannot be undone",
+              onConfirm: () => console.log("Deleted"),
+            })
+          }
+         >
+          <TrashIcon className="h-4 w-4" />
+          <span className="hidden ml-1">Delete</span>
         </button>
       </div>
     </div>

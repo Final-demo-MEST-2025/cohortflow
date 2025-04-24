@@ -81,14 +81,12 @@ export default function ProfileEditForm({ onUpdate }) {
           {/* Name Field */}
           <div>
             <label
-              className="mb-3 block text-xs font-medium text-gray-900"
               htmlFor="name"
             >
               Full Name
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 id="name"
                 type="text"
                 name="name"
@@ -109,14 +107,13 @@ export default function ProfileEditForm({ onUpdate }) {
           {/* Email Field (read-only) */}
           <div>
             <label
-              className="mb-3 block text-xs font-medium text-gray-900"
               htmlFor="email"
             >
               Email
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm bg-gray-100 cursor-not-allowed"
+                className="cursor-not-allowed"
                 id="email"
                 type="email"
                 name="email"
@@ -131,14 +128,12 @@ export default function ProfileEditForm({ onUpdate }) {
           {/* Phone Field */}
           <div>
             <label
-              className="mb-3 block text-xs font-medium text-gray-900"
               htmlFor="phone"
             >
               Phone Number
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 id="phone"
                 type="tel"
                 name="phone"
@@ -159,14 +154,12 @@ export default function ProfileEditForm({ onUpdate }) {
           {/* Bio Field */}
           <div>
             <label
-              className="mb-3 block text-xs font-medium text-gray-900"
               htmlFor="bio"
             >
               Bio
             </label>
             <div className="relative">
               <textarea
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500 min-h-[100px]"
                 id="bio"
                 name="bio"
                 defaultValue={user.bio || ""}
@@ -186,14 +179,12 @@ export default function ProfileEditForm({ onUpdate }) {
             {/* GitHub */}
             <div className="mb-4">
               <label
-                className="mb-3 block text-xs font-medium text-gray-900"
                 htmlFor="github"
               >
                 GitHub
               </label>
               <div className="relative">
                 <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   id="github"
                   type="text"
                   name="gitHub"
@@ -216,14 +207,12 @@ export default function ProfileEditForm({ onUpdate }) {
             {/* LinkedIn */}
             <div>
               <label
-                className="mb-3 block text-xs font-medium text-gray-900"
                 htmlFor="linkedin"
               >
                 LinkedIn
               </label>
               <div className="relative">
                 <input
-                  className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                   id="linkedin"
                   type="text"
                   name="linkedIn"
@@ -247,14 +236,12 @@ export default function ProfileEditForm({ onUpdate }) {
           {/* Portfolio */}
           <div>
             <label
-              className="mb-3 block text-xs font-medium text-gray-900"
               htmlFor="portfolio"
             >
               Portfolio
             </label>
             <div className="relative">
               <input
-                className="peer block w-full rounded-md border border-gray-200 py-[9px] pl-10 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
                 id="portfolio"
                 type="text"
                 name="portfolio"

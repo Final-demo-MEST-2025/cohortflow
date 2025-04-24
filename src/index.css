@@ -1,18 +1,25 @@
-@import "tailwindcss";
+@import "tailwindcss" important;
 
 @theme {
   --font-inter: 'Inter', serif;
   --font-lusitana: 'Lusitana', serif;
 
-  --color-brand-50: var(--color-teal-50);
-  --color-brand-100: var(--color-teal-100);
-  --color-brand-200: var(--color-teal-200);
-  --color-brand-300: var(--color-teal-300);
-  --color-brand-400: var(--color-teal-400);
-  --color-brand-500: var(--color-teal-500);
-  --color-brand-600: var(--color-teal-600);
-  --color-brand-700: var(--color-teal-700);
-  --color-brand-800: var(--color-teal-800);
+  --color-brand-50: var(--color-orange-50);
+  --color-brand-100: var(--color-orange-100);
+  --color-brand-200: var(--color-orange-200);
+  --color-brand-300: var(--color-orange-300);
+  --color-brand-400: var(--color-orange-400);
+  --color-brand-500: var(--color-orange-500);
+  --color-brand-600: var(--color-orange-600);
+  --color-brand-700: var(--color-orange-700);
+  --color-brand-800: var(--color-orange-800);
+
+  --animate-loading-bar: loading-bar 1.2s linear infinite;
+
+  @keyframes loading-bar {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
 }
 
 @plugin 'tailwind-scrollbar';
@@ -38,4 +45,101 @@ input[type='number']::-webkit-inner-spin-button {
 input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+  @apply block w-full rounded-md border border-gray-200 py-[9px] pl-8 text-sm placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-brand-500 appearance-none transition-all;
+}
+
+label {
+  @apply mb-3 mt-5 block text-xs font-medium text-gray-900;
+}
+
+form {
+  @apply space-y-3
+}
+
+button {
+  @apply cursor-pointer;
+}
+
+img {
+  @apply max-w-full h-auto object-cover rounded-md my-2 shadow-sm hover:scale-102 transition-transform duration-200 ease-in-out;
+}
+
+pre {
+  @apply bg-gray-900 text-white font-mono text-sm p-4 rounded;
+}
+
+
+.react-select__control {
+  @apply bg-transparent border border-gray-200 rounded-md py-0.5 pl-8 text-sm shadow-none outline-none transition-all;
+}
+
+.react-select__control--is-focused {
+  @apply ring-2 ring-brand-500 outline-none transition-all;
+}
+
+.react-select__control:hover {
+  /* @apply border-blue-600; */
+}
+
+.react-select__value-container {
+  @apply px-1 py-0;
+}
+
+.react-select__placeholder {
+  @apply text-gray-500 text-sm;
+}
+
+.react-select__input-container {
+  @apply text-gray-800;
+}
+
+.react-select__input-container .react-select__input {
+  @apply outline-none focus:ring-0 border-0 p-0
+}
+
+.react-select__menu {
+  @apply bg-white border border-gray-200 rounded-md mt-1 shadow-lg z-50;
+}
+
+.react-select__option {
+  @apply text-gray-600 text-sm px-4 py-2 cursor-pointer hover:bg-brand-50;
+}
+
+.react-select__option--is-selected {
+  @apply bg-blue-100;
+}
+
+.react-select__multi-value {
+  @apply bg-brand-300 rounded px-2 text-sm;
+}
+
+.react-select__multi-value__remove {
+  /* @apply text-blue-800 dark:text-white hover:text-red-500; */
+}
+
+.react-select__indicator-separator {
+  /* @apply hidden; */
+}
+
+.react-select__dropdown-indicator {
+  /* @apply text-gray-500 hover:text-gray-700; */
+}
+
+.react-select__clear-indicator {
+  @apply text-gray-400 hover:text-brand-500;
+}
+
+.react-select__single-value {
+  @apply text-sm;
 }

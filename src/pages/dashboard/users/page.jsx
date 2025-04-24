@@ -5,7 +5,9 @@ import UserActions from "@/components/ui/dashboard/users/actions";
 import UserCard from "@/components/ui/dashboard/users/card";
 import UserTable from "@/components/ui/dashboard/users/table";
 import { useQuery } from "@tanstack/react-query";
-import { userService } from "@/services/users"; 
+import { userService } from "@/services/users";
+import LoadingBar from "@/components/ui/loading-bar";
+import Spinner from "@/components/ui/spinner";
 
 
 export default function UsersPage() {
@@ -18,22 +20,27 @@ export default function UsersPage() {
   const isAdmin = authCtx?.user?.role === "admin";
 
   
-  const { data } = useQuery({
-    queryKey:["userData"],
+  const { data, isLoading } = useQuery({
+    queryKey:["users"],
     queryFn: () => userService.fetchUserData(),
     refetchOnWindowFocus: false,
-    retry: false,
+    retry: 3,
     enabled: isAdmin,
-    suspense: isAdmin
+    // suspense: isAdmin
   });
 
+  // 
   const handleActions = (type) => {
     console.log(type);
     console.log(selectedUserIds);
     console.log(newRole)
   }
 
-  if (!data) return null;
+  if (isLoading) {
+    return <LoadingBar />
+  }
+
+  if (!data) return <Spinner />;
   return (
     <main className="p-4 md:p-6 space-y-6">
       <h1 className="font-lusitana mb-4 text-xl md:text-2xl md:mb-8">Users</h1>
@@ -51,13 +58,13 @@ export default function UsersPage() {
         <div className="inline-block min-w-full align-middle">
           <div className="rounded-lg bg-gray-50 p-2 md:pt-0">
             <div className="md:hidden space-y-4">
-              {data?.users.map((user) => (
+              {data.map((user) => (
                 <UserCard key={user.id} user={user} setSelectedUser={setSelectedUser} />
               ))}
             </div>
 
             <UserTable
-              users={data?.users}
+              users={data}
               setSelectedUser={setSelectedUser}
               setSelectedUserIds={setSelectedUserIds}
               selectedUserIds={selectedUserIds}

@@ -29,7 +29,7 @@ export default function NavLinks() {
   const links = [
     { name: "Home", to: "/dashboard", icon: HomeIcon },
     isAdmin && { name: "Programs", to: "/dashboard/programs", icon: Squares2X2Icon },
-    isAdmin && { name: "Cohorts", to: "/dashboard/cohorts", icon: UserGroupIcon },
+    // isAdmin && { name: "Cohorts", to: "/dashboard/cohorts", icon: UserGroupIcon },
     {
       name: "Classrooms",
       to: "/dashboard/classrooms",
@@ -37,7 +37,7 @@ export default function NavLinks() {
     },
     isAdmin && { name: "Attendance", to: "/dashboard/attendance", icon: CheckCircleIcon },
     isAdmin && { name: "Resources", to: "/dashboard/resources", icon: InboxStackIcon },
-    isAdmin && { name: "Users", to: "/dashboard/users", icon: UsersIcon },
+    isAdmin && { name: "User Management", to: "/dashboard/users", icon: UsersIcon },
     { name: "Courses", to: "/dashboard/courses", icon: BookOpenIcon },
     { name: "Profile", to: "/dashboard/users/me", icon: UserCircleIcon },
     { name: "Settings", to: "/dashboard/settings", icon: CogIcon },
@@ -57,7 +57,8 @@ export default function NavLinks() {
             className={clsx(
               "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-brand-600 md:flex-none md:justify-start md:p-2 md:px-3",
               {
-                "bg-sky-100 text-brand-600": pathname === link.to,
+                "bg-sky-100 text-brand-600": pathname === link.to || pathname.includes(`/${link.name.toLowerCase()}`),
+                
               }
             )}
           >

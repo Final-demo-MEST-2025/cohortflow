@@ -13,27 +13,29 @@ export default function Page() {
   const registerMutation = useMutation({
     mutationFn: (credentials) => userService.registerUser(credentials),
     onSuccess: (user) => {
-      const users = queryClient.getQueryData(['userData'])
-      queryClient.setQueryData(['userData'], users.concat(user))
+      const users = queryClient.getQueryData(['users']);
+      queryClient.setQueryData(['users'], users.concat(user));
+      notify("User added successfully", "success");
     },
-    onError: () => notify(
-      'Something went wrong. User registration unsuccessful.',
-      'error'
-    )
-  })
+    onError: (error) => {
+      const err = error?.response.data.error ||
+      "Something went wrong. User registration unsuccessful.";
+      notify(err, "error");
+    }
+  });
 
-  const onSuccess = (credentials, message) => {
+  const onSuccess = (credentials) => {
     registerMutation.mutate(credentials, {
       onSuccess: () => {
         navigate(-1);
-        notify(message, 'success');
-      },
+      }
     });
   }
 
   const onSubmitAndAdd = (credentials) => {
     registerMutation.mutate(credentials);
   }
+
   return (
     <main>
       <Breadcrumbs

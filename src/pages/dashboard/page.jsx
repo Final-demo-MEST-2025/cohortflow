@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { CardsSkeleton } from "../../components/ui/skeletons";
-import CardWrapper from "../../components/ui/dashboard/cards";
+import { CardsSkeleton } from "@/components/ui/skeletons";
+import CardWrapper from "@/components/ui/dashboard/cards";
 
 export default function Page() {
 

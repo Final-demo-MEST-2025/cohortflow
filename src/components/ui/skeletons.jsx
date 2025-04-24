@@ -29,6 +29,20 @@ export function CardsSkeleton() {
   );
 }
 
+export function ClassroomCardSkeleton() {
+  return (
+    <div className="bg-white rounded-lg overflow-hidden shadow-md animate-pulse">
+      <div className="h-32 flex items-center justify-center bg-gray-200 dark:bg-zinc-700">
+        <span className="w-10 h-10 rounded-full bg-gray-300 dark:bg-zinc-600"></span>
+      </div>
+      <div className="bg-gray-50 dark:bg-zinc-800 p-4">
+        <div className="h-5 bg-gray-300 dark:bg-zinc-600 rounded w-3/4 mb-2"></div>
+        <div className="h-4 bg-gray-200 dark:bg-zinc-700 rounded w-1/2"></div>
+      </div>
+    </div>
+  );
+}
+
 export function RevenueChartSkeleton() {
   return (
     <div className={`${shimmer} relative w-full overflow-hidden md:col-span-4`}>

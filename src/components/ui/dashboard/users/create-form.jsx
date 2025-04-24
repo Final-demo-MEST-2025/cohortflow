@@ -38,10 +38,9 @@ export function RegisterForm({ onSuccess, onSubmitAndAdd }) {
         }
 
         const action = formData.get("action");
-        const message = "User registered successfully!";
         action === "submitAndAdd"
           ? onSubmitAndAdd(validatedFields.data)
-          : onSuccess(validatedFields.data, message);
+          : onSuccess(validatedFields.data);
 
         // Here you would typically call your API to register the user
 

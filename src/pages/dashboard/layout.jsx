@@ -17,7 +17,7 @@ export default function Layout() {
       <div
         className={clsx(
           isClassroom ? "md:p-6" : "md:p-12",
-          "flex-grow p-6 md:overflow-y-auto md:flex md:flex-col"
+          "flex-grow p-6 md:overflow-y-auto md:flex md:flex-col scrollbar-none md:scrollbar-thin md:scrollbar-thumb-brand-200 md:scrollbar-track-transparent"
         )}
       >
         {isShow && <Avatar />}

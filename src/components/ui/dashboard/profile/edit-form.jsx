@@ -32,8 +32,8 @@ const ProfileSchema = z.object({
 
 export default function ProfileEditForm({ onUpdate }) {
   const navigate = useNavigate();
-  const data = useOutletContext();
-  const user = { ...data.profile.data, ...data.user.data };
+  const { profile, authUser } = useOutletContext();
+  const user = { ...profile, ...authUser };
   
 
   const [state, formAction] = useActionState(

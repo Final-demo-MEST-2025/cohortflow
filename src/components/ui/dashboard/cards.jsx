@@ -1,15 +1,15 @@
 
 import { Suspense } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { userService } from "../../../services/users";
+import { userService } from "@/services/users";
 import Card from "./card";
-import { CardsSkeleton } from "../skeletons";
+import LoadingBar from "../loading-bar";
 
 export default function CardWrapper() {
   const authCtx = userService.getAuthContext();
   const isAdmin = authCtx?.user?.role === "admin";
   
-  const { data } = useQuery({
+  const { data: users={}, isLoading } = useQuery({
     queryKey: ["userCount"],
     queryFn: () => userService.fetchUserCount(),
     refetchOnWindowFocus: false,
@@ -17,12 +17,13 @@ export default function CardWrapper() {
     enabled: isAdmin,
     suspense: isAdmin
   });
-  
-  if (!data) {
-    return null;
-  }
 
-  const { totalUsers, totalAdmins, totalInstructors, totalLearners } = data;
+  if (isLoading) {
+    <LoadingBar />
+  }
+  
+ 
+  const { totalUsers, totalAdmins, totalInstructors, totalLearners } = users;
 
   return (
     <>

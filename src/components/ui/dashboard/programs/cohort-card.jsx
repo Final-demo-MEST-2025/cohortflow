@@ -20,23 +20,13 @@ import {
 import useDeleteConfirm from "@/feature/delete/use-delete-confirm";
 
 
-export default function CohortCard({
-  id,
-  name,
-  programId,
-  description,
-  learners,
-  instructors,
-  startDate,
-  endDate,
-  onCohortEdit
-}) {
+export default function CohortCard({ cohort, onCohortEdit }) {
   const [selectedUser, setSelectedUser] = useState(null);
   const [query, setQuery] = useState("");
 
   const confirm = useDeleteConfirm();
 
-  const users = [...learners, ...instructors];
+  const users = [...cohort.learners, ...cohort.instructors];
   const filteredUsers =
     query === ""
       ? users
@@ -48,29 +38,29 @@ export default function CohortCard({
     <div className="font-lusitana w-full h-70 rounded-xl bg-gray-50 p-4 shadow-sm">
       <div className="mb-4 flex items-center">
         <AcademicCapIcon className="h-5 w-5 text-gray-700" />
-        <h3 className="ml-2 text-lg font-medium">{name}</h3>
+        <h3 className="ml-2 text-lg font-medium">{cohort.name}</h3>
       </div>
 
       <div className="space-y-3 bg-white p-3 rounded-t-2xl shrink-0 flex flex-col justify-between">
         <div className="flex items-center">
           <BookOpenIcon className="h-5 w-5 text-gray-500" />
-          <span className="ml-2 text-sm text-gray-700">{programId.name}</span>
+          <span className="ml-2 text-sm text-gray-700">{cohort.programId.name}</span>
         </div>
 
         <div className="bg-white">
-          <p className="truncate text-sm text-gray-600">{description}</p>
+          {/* <p className="truncate text-sm text-gray-600">{description}</p> */}
 
           <div className="flex items-center space-x-4">
             <div className="flex items-center">
               <UserGroupIcon className="h-5 w-5 text-gray-500" />
               <span className="ml-2 text-sm text-gray-700">
-                {learners.length} Learners
+                {cohort.learners.length} Learners
               </span>
             </div>
             <div className="flex items-center">
               <UserIcon className="h-5 w-5 text-gray-500" />
               <span className="ml-2 text-sm text-gray-700">
-                {instructors.length} Instructors
+                {cohort.instructors.length} Instructors
               </span>
             </div>
           </div>
@@ -78,7 +68,7 @@ export default function CohortCard({
           <div className="flex items-center">
             <CalendarIcon className="h-5 w-5 text-gray-500" />
             <span className="ml-2 text-sm text-gray-700">
-              {startDate} → {endDate}
+              {cohort.startDate} → {cohort.endDate}
             </span>
           </div>
         </div>
@@ -124,7 +114,7 @@ export default function CohortCard({
         <div className="mt-4 md:mt-6 flex justify-center gap-15 ">
           <button
             className="flex items-center text-sm text-blue-600 hover:text-blue-800"
-            onClick={() => onCohortEdit(id)}
+            onClick={() => onCohortEdit(cohort.id)}
 
           >
             <PencilIcon className="h-4 w-4" />

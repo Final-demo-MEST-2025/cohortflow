@@ -96,6 +96,7 @@ const Editor = forwardRef(
 </svg>`;
 
         // Custom documents handler
+        // Integration to the backend not add
         const fileUpload = {
           handlers: {
             file: () => {
@@ -115,7 +116,7 @@ const Editor = forwardRef(
 
                   imageMutation.mutate(formData, {
                     onSuccess: (result) => {
-                      notify("Image uploaded successfully", "success");
+                      notify("File uploaded successfully", "success");
                       if (result.success) {
                         // Insert a link to the file in the editor
                         const range = quill.getSelection(true);

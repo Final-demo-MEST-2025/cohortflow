@@ -3,49 +3,41 @@ import {
   CalendarIcon,
   MapPinIcon,
   PencilIcon,
+  PencilSquareIcon,
   TrashIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import useDeleteConfirm from "@/feature/delete/use-delete-confirm";
 
 
-export default function ProgramCard({
-  onProgramEdit,
-  id,
-  name,
-  description,
-  location,
-  startDate,
-  endDate,
-  createdBy,
-}) {
+export default function ProgramCard({ program, onProgramEdit }) {
   const confirm = useDeleteConfirm();
   return (
     <div className="font-lusitana w-full h-70 rounded-xl bg-gray-50 p-4 shadow-sm">
       <div className="mb-4 flex items-center">
         <BookOpenIcon className="h-5 w-5 text-gray-700" />
-        <h3 className="ml-2 text-lg font-medium">{name}</h3>
+        <h3 className="ml-2 text-lg font-medium">{program.name}</h3>
       </div>
 
       <div className="space-y-3 bg-white p-3 rounded-t-2xl shrink-0 flex flex-col justify-between">
-        <p className="truncate text-sm text-gray-600">{description}</p>
+        {/* <p className="truncate text-sm text-gray-600">{program.description}</p> */}
 
         <div className="flex items-center">
           <MapPinIcon className="h-5 w-5 text-gray-500" />
-          <span className="ml-2 text-sm text-gray-700">{location}</span>
+          <span className="ml-2 text-sm text-gray-700">{program.location}</span>
         </div>
 
         <div className="flex items-center">
           <CalendarIcon className="h-5 w-5 text-gray-500" />
           <span className="ml-2 text-sm text-gray-700">
-            {startDate} → {endDate}
+            {program.startDate} → {program.endDate}
           </span>
         </div>
 
         <div className="flex items-center">
           <UserIcon className="h-5 w-5 text-gray-500" />
           <span className="ml-2 text-sm text-gray-700">
-            Created by: {createdBy.name}
+            Created by: {program.createdBy.name}
           </span>
         </div>
       </div>
@@ -55,9 +47,9 @@ export default function ProgramCard({
       <div className="mt-6 flex justify-center gap-15">
         <button
           className="flex items-center text-sm text-blue-600 hover:text-blue-800"
-          onClick={() => onProgramEdit(id)}
+          onClick={() => onProgramEdit(program.id)}
         >
-          <PencilIcon className="h-4 w-4" />
+          <PencilSquareIcon className="h-4 w-4" />
           <span className="hidden ml-1">Edit</span>
         </button>
 

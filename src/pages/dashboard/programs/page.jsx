@@ -8,6 +8,7 @@ import CohortModal from "../../../components/ui/dashboard/programs/cohort-form";
 import { programService } from "../../../services/programs";
 import { userService } from "../../../services/users";
 import { useNotification } from "@/hooks";
+import Spinner from "../../../components/ui/spinner";
 
 export default function ProgramCohortPage() {
   const [showProgramModal, setShowProgramModal] = useState(false);
@@ -22,29 +23,32 @@ export default function ProgramCohortPage() {
 
   const queryClient = useQueryClient();
 
-  const users = useQuery({
-    queryKey: ['userData'],
-    queryFn: () => userService.fetchUserData()
+  const {data: users=[], isFetching } = useQuery({
+    queryKey: ['users'],
+    queryFn: () => userService.fetchUserData(),
+    refetchOnWindowFocus: false,
+    retry: 3
   });
+  
 
 
 
-  const programs = useQuery({
+  const { data: programs=[] } = useQuery({
     queryKey: ['programs'],
     queryFn: () => programService.fetchPrograms(),
     refetchOnWindowFocus: false,
-    retry: false,
+    retry: 3,
     enabled: isAdmin,
-    suspense: isAdmin
+    // suspense: isAdmin
   });
 
-  const cohorts = useQuery({
+  const { data: cohorts=[] } = useQuery({
     queryKey: ["cohorts"],
     queryFn: () => programService.fetchCohorts(),
     refetchOnWindowFocus: false,
-    retry: false,
+    retry: 3,
     enabled: isAdmin,
-    suspense: isAdmin,
+    // suspense: isAdmin,
   });
 
   const programMutation = useMutation({
@@ -112,17 +116,21 @@ export default function ProgramCohortPage() {
   };
 
   const handleEditProgram = (programId) => {
-    const programs = queryClient.getQueryData(['programs']);
+    // const programs = queryClient.getQueryData(['programs']);
     const programToEdit = programs.find(p => p.id === programId);
     setSelectedProgram(programToEdit);
     setShowProgramModal(true);
   }
 
   const handleEditCohort = (cohortId) => {
-    const cohorts = queryClient.getQueryData(['cohorts']);
+    // const cohorts = queryClient.getQueryData(['cohorts']);
     const cohortToEdit = cohorts.find((c) => c.id === cohortId);
     setSelectedCohort(cohortToEdit);
     setShowCohortModal(true);
+  }
+
+  if (isFetching) {
+    return <Spinner />
   }
 
   return (
@@ -150,12 +158,12 @@ export default function ProgramCohortPage() {
             </div>
 
             <div className="space-y-4">
-              {programs.data.length > 0 ? (
-                programs.data.map((program) => (
+              {programs.length > 0 ? (
+                programs.map((program) => (
                   <ProgramCard
                     key={program.id}
                     onProgramEdit={handleEditProgram}
-                    {...program}
+                    program={program}
                   />
                 ))
               ) : (
@@ -183,11 +191,11 @@ export default function ProgramCohortPage() {
             </div>
 
             <div className="space-y-4">
-              {cohorts.data.length > 0 ? (
-                cohorts.data.map((cohort) => (
+              {cohorts.length > 0 ? (
+                cohorts.map((cohort) => (
                   <CohortCard
                     key={cohort.id}
-                    {...cohort}
+                    cohort={cohort}
                     onCohortEdit={handleEditCohort}
                   />
                 ))
@@ -221,8 +229,8 @@ export default function ProgramCohortPage() {
               setIsLoading(false);
             }}
             onSubmit={handleCohortSubmit}
-            programs={programs.data}
-            users={users.data.users}
+            programs={programs}
+            users={users}
             isLoading={isLoading}
           />
         )}

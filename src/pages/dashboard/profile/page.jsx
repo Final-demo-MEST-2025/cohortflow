@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 import { useOutletContext } from "react-router-dom";
 
 export default function ProfilePage() {
-  const profile = useOutletContext();
+  const {profile, authUser} = useOutletContext();
   
-  const user = {...profile.profile.data, ...profile.user.data}
+  const user = {...profile, ...authUser}
 
   const getRoleColor = () => {
     switch (user.role) {

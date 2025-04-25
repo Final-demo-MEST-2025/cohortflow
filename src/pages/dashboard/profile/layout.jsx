@@ -3,28 +3,35 @@ import { Outlet } from "react-router-dom";
 import UserProfile from "../../../components/ui/dashboard/users/user-profile";
 import { profileService } from "../../../services/profiles";
 import { userService } from "../../../services/users";
+import Spinner from "../../../components/ui/spinner";
+import LoadingBar from "../../../components/ui/loading-bar";
 
 export default function ProfileLayout() {
   const authCtx = profileService.getAuthContext();
   const hasRole = !!authCtx?.user?.role;
 
-  const profile = useQuery({
+  const { data: profile={}, isLoading } = useQuery({
     queryKey: ["profile"],
     queryFn: () => profileService.fetchUserProfile(),
     refetchOnWindowFocus: false,
-    retry: false,
+    retry: 3,
     enabled: hasRole,
-    suspense: hasRole,
+    // suspense: hasRole,
   });
 
-  const user = useQuery({
+  const { data: authUser={}, isFetching } = useQuery({
     queryKey: ["user"],
     queryFn: () => userService.fetchUser(),
     refetchOnWindowFocus: false,
-    retry: false,
+    retry: 3,
     enabled: hasRole,
-    suspense: hasRole,
+    // suspense: hasRole,
   });
+
+  if (isLoading) {
+    return <LoadingBar />
+  }
+
 
   return (
     <div className="md:flex flex-col p-4 md:p-6 space-y-6">
@@ -32,7 +39,13 @@ export default function ProfileLayout() {
         Profile
       </h1>
       <div className="mt-6">
-        <Outlet context={{profile, user}}/>
+        {isFetching
+          ? (
+            <Spinner />
+          ):(
+            <Outlet context={{ profile, authUser }} />
+          )
+        }
       </div>
     </div>
   );

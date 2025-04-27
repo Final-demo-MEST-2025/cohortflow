@@ -21,7 +21,7 @@ class AuthService {
   refreshToken;
   user;
   tokenExpiry;
-  refreshExpiry
+  refreshExpiry;
   deviceId;
 
   constructor() {
@@ -45,12 +45,10 @@ class AuthService {
     this.refreshToken = localStorage.getItem("refreshToken");
     const expiry = localStorage.getItem("tokenExpiry");
     this.tokenExpiry = expiry ? parseInt(expiry) : null;
-    this.refreshExpiry = parseInt(
-      localStorage.getItem('refreshTokenExpiry')
-    ) || null;
-    this.user = JSON.parse(localStorage.getItem('user'));
+    this.refreshExpiry =
+      parseInt(localStorage.getItem("refreshTokenExpiry")) || null;
+    this.user = JSON.parse(localStorage.getItem("user"));
   }
-  
 
   saveTokens(response) {
     this.token = response.accessToken;
@@ -58,7 +56,8 @@ class AuthService {
     this.tokenExpiry = Date.now() + response.expiresIn * 1000;
     this.user = JSON.stringify(response.user);
     // Calculate expiration (7 days from initial login)
-    const refreshTokenExpiry = Date.now() + AuthService.REFRESH_TOKEN_EXPIRY_DAYS * 86400000;
+    const refreshTokenExpiry =
+      Date.now() + AuthService.REFRESH_TOKEN_EXPIRY_DAYS * 86400000;
     this.refreshExpiry = refreshTokenExpiry;
 
     localStorage.setItem("refreshTokenExpiry", refreshTokenExpiry.toString());
@@ -83,38 +82,41 @@ class AuthService {
   }
 
   async checkTokenExpiry() {
-    console.log('is refreshing...', this.isRefreshing || !this.token ? "false" : "true");
+    console.log(
+      "is refreshing...",
+      this.isRefreshing || !this.token ? "false" : "true"
+    );
     if (
       this.isRefreshing ||
       !this.token ||
       !this.refreshToken ||
       !this.tokenExpiry
-    ) return;
+    )
+      return;
 
     // If token is still valid (with 1 minute buffer), do nothing
     if (Date.now() < this.tokenExpiry - 60000) return;
 
-
     // if refresh token has expired, force logout UI update
     const refreshExpiry = localStorage.getItem("refreshTokenExpiry");
     if (refreshExpiry && Date.now() > parseInt(refreshExpiry) - 60000) {
-      console.log('refresh token expired');
+      console.log("refresh token expired");
       await this.logout(true);
       return;
     }
 
-    console.log('About to refresh...')
-    
+    console.log("About to refresh...");
+
     this.isRefreshing = true;
 
     try {
       const refreshed = await this.refreshAuthToken();
-      console.log(refreshed)
+      console.log(refreshed);
       if (!refreshed) {
         throw new AuthError("SessionExpired");
       }
     } catch (error) {
-      console.log('Auto-refresh failed', error);
+      console.log("Auto-refresh failed", error);
       await this.logout(true);
     } finally {
       this.isRefreshing = false;
@@ -131,20 +133,20 @@ class AuthService {
 
   async refreshAuthToken() {
     const storedExpiry = localStorage.getItem("refreshTokenExpiry");
-    const expiryDate = storedExpiry ? parseInt(storedExpiry) : null
+    const expiryDate = storedExpiry ? parseInt(storedExpiry) : null;
 
     if (!this.refreshToken || !expiryDate) return false;
 
     // Automatic logout if expired
     if (Date.now() > expiryDate) {
-      console.log('refreshToken expired')
+      console.log("refreshToken expired");
 
       await this.logout(true);
       return false;
     }
 
     try {
-      console.log('Refreshing access token...');
+      console.log("Refreshing access token...");
 
       const response = await client("/users/refresh-token", {
         method: "POST",
@@ -157,7 +159,7 @@ class AuthService {
 
       if (response.status === 200) {
         this.saveTokens(response.data);
-        console.log('Token refreshed successfully');
+        console.log("Token refreshed successfully");
         return true;
       }
     } catch (error) {
@@ -195,7 +197,16 @@ class AuthService {
     return true;
   }
 
-  async logout(forceReload=false) {
+  async guestLogin() {
+    const response = await client("/users/guest-login", {
+      method: "POST",
+      headers: this.getJsonHeaders(),
+    });
+    this.saveTokens(response.data);
+    return true;
+  }
+
+  async logout(forceReload = false) {
     try {
       const { refreshToken } = await this.getCurrentDeviceTokens();
       if (refreshToken) {
@@ -204,8 +215,8 @@ class AuthService {
           headers: this.getJsonHeaders(true),
           data: {
             refreshToken,
-            deviceId: this.deviceId
-          }
+            deviceId: this.deviceId,
+          },
         });
       }
     } finally {
@@ -215,9 +226,11 @@ class AuthService {
       if (forceReload) {
         window.location.reload();
       } else {
-        window.dispatchEvent(new CustomEvent('auth-change', {
-          detail: { isLoggedIn: false }
-        }));
+        window.dispatchEvent(
+          new CustomEvent("auth-change", {
+            detail: { isLoggedIn: false },
+          })
+        );
       }
     }
   }

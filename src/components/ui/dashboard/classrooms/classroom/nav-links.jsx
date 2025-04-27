@@ -6,8 +6,7 @@ import {
   QuestionMarkCircleIcon,
   UserGroupIcon
 } from "@heroicons/react/24/outline";
-import { Link, useParams } from "react-router-dom";
-import { useLocation } from "react-router-dom"; 
+import { Link, useParams, useLocation } from "react-router-dom"; 
 import clsx from "clsx";
 import { DocumentTextIcon } from "@heroicons/react/24/outline";
 // import { authService } from "../../../../services/auth";
@@ -15,6 +14,7 @@ import { DocumentTextIcon } from "@heroicons/react/24/outline";
 
 export default function NavLinks() {
   const { id } = useParams();
+  const { pathname } = useLocation()
   // const { role } = authService.getAuthenticatedUser();
   // const isAdmin = role === "admin";
   // const isInstructor = role === "instructor";
@@ -53,9 +53,6 @@ export default function NavLinks() {
     },
   ].filter(Boolean);
 
-
-  const pathname = useLocation().pathname;
-
   return (
     <>
       {links.map((link) => {
@@ -67,7 +64,7 @@ export default function NavLinks() {
             className={clsx(
               "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-brand-600 md:flex-none md:justify-start md:p-2 md:px-3",
               {
-                "bg-sky-100 text-brand-600": pathname === link.to,
+                "bg-sky-100 text-brand-600": pathname === link.to || pathname.includes(`/${link.name.toLowerCase()}`),
               }
             )}
           >

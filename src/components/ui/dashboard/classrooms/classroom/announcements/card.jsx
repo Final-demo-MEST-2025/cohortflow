@@ -1,4 +1,4 @@
-import { formatDate } from "@/utils";
+import { formatDate } from "@/utils/utils.js";
 import { ChatBubbleLeftIcon, HandThumbUpIcon, PaperClipIcon, PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import useDeleteConfirm from "@/feature/delete/use-delete-confirm";
 import { authService } from "@/services/auth";

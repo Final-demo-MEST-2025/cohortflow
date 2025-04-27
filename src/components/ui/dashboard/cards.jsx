@@ -22,7 +22,6 @@ export default function CardWrapper() {
     <LoadingBar />
   }
   
- 
   const { totalUsers, totalAdmins, totalInstructors, totalLearners } = users;
 
   return (

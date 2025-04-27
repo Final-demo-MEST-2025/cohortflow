@@ -28,6 +28,9 @@ import Courses from './pages/dashboard/classrooms/classroom/courses/page'
 import People from './pages/dashboard/classrooms/classroom/people/page'
 import NetworkStatusBanner from './components/ui/network-status'
 import NetworkStatusMonitor from './components/ui/network-status-banner'
+import { QuizProvider } from './contexts/QuizContext'
+import QuizLayout from './pages/dashboard/classrooms/classroom/quizzes/layout'
+import CreateQuizPage from './pages/dashboard/classrooms/classroom/quizzes/create/page'
 
 
 
@@ -62,10 +65,18 @@ const App = () => {
                 <Route path='/dashboard/classrooms/:id' element={<ClassroomLayout />}>
                   <Route index element={<Announcements />} />
                   <Route path='/dashboard/classrooms/:id/assignments' element={<Assignments />} />
-                  <Route path='/dashboard/classrooms/:id/quizzes' element={<Quizzes />} />
                   <Route path='/dashboard/classrooms/:id/projects' element={<Projects />} />
                   <Route path='/dashboard/classrooms/:id/courses' element={<Courses />} />
                   <Route path='/dashboard/classrooms/:id/people' element={<People />} />
+                  <Route path='/dashboard/classrooms/:id/quizzes' element={<QuizLayout />} >
+                    {/* Quiz provider provide context to quiz routes */}
+                    <Route element={<QuizProvider />}>
+                      <Route index element={<Quizzes />} />
+                      <Route element={<ProtectedRoute roles={["admin", "instructor"]} />}>
+                        <Route path='/dashboard/classrooms/:id/quizzes/create' element={<CreateQuizPage />} />
+                      </Route>
+                    </Route>
+                  </Route>
                 </Route>
               </Route>
 

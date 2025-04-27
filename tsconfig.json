@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {                                                                                      
+    "forceConsistentCasingInFileNames": true,
+
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+
+    // disallow reading .js/.jsx files too
+    "allowJs": false,
+    "checkJs": false,
+
+    // emit declarations only for .ts/.tsx
+    "declaration": true,
+    "declarationMap": true,
+
+    // where to put compiled files
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules", "dist", "src/**/*.js", "src/**/*.jsx"]
+}

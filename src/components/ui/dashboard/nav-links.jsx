@@ -44,7 +44,7 @@ export default function NavLinks() {
   ].filter(Boolean);
 
 
-  const pathname = useLocation().pathname;
+  const { pathname } = useLocation();
 
   return (
     <>
